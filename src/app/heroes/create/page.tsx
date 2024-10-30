@@ -1,12 +1,14 @@
-// src/app/heroes/create/page.tsx
+// pages/CreateHero.tsx
 "use client";
 
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useEffect, useState } from 'react';
-import api from '@/services/api';
 import { Hero } from '@/types/hero';
 import { ArrowLeftIcon, CheckIcon } from '@heroicons/react/24/solid';
+import { fetchHero, saveHero } from '@/services/heroService';
+import { fetchCategories } from '@/services/categoryService';
+import { Category } from '@/types/category';
 
 interface HeroFormInputs {
   name: string;
@@ -16,35 +18,26 @@ interface HeroFormInputs {
 const CreateHero: React.FC = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const heroId = searchParams.get('id'); // Pega o ID do herói, se houver
-  const { register, handleSubmit, reset, setValue } = useForm<HeroFormInputs>();
-  const [categories, setCategories] = useState<{ id: string; name: string }[]>([]);
+  const heroId = searchParams?.get('id');
+  const { register, handleSubmit, reset, setValue, formState: { errors } } = useForm<HeroFormInputs>();
+  const [categories, setCategories] = useState<Category[]>([]);
 
   useEffect(() => {
-    // Carregar lista de categorias ao montar o componente
-    api.get('/categories').then((response) => {
-      setCategories(response.data);
+    fetchCategories().then((response) => {
+      setCategories(response.Items);
     });
 
-    // Se houver um ID, buscar os dados do herói para edição
     if (heroId) {
-      api.get(`/heroes/${heroId}`).then((response) => {
-        const hero = response.data;
-        setValue('name', hero.name);
-        setValue('categoryId', hero.categoryId);
+      fetchHero(Number(heroId)).then((response) => {
+        const hero = response;
+        setValue('name', hero.Name);
+        setValue('categoryId', hero.Category.Id.toString());
       });
     }
   }, [heroId, setValue]);
 
-  const onSubmit: SubmitHandler<HeroFormInputs> = async (data) => {
-    if (heroId) {
-      // Atualizar o herói existente
-      await api.put(`/heroes/${heroId}`, data);
-    } else {
-      // Criar um novo herói
-      await api.post<Hero>('/heroes', data);
-    }
-    // Redirecionar para a lista de heróis após salvar
+  const onSubmit: SubmitHandler<HeroFormInputs> = async (data:any) => {
+    await saveHero(Number(heroId), data as Hero);
     router.push('/heroes');
   };
 
@@ -69,27 +62,36 @@ const CreateHero: React.FC = () => {
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          {/* Campo de Nome do Herói */}
           <div>
             <label className="block text-gray-700 mb-1">Nome do Herói</label>
             <input
-              {...register('name', { required: true })}
-              className="w-full p-2 border border-gray-300 rounded mt-1 focus:outline-none focus:border-blue-500"
+              {...register('name', { required: "O nome é obrigatório" })}
+              className={`w-full p-2 border rounded mt-1 focus:outline-none ${errors.name ? 'border-red-500' : 'border-gray-300 focus:border-blue-500'
+                }`}
               placeholder="Nome"
             />
+            {errors.name && (
+              <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
+            )}
           </div>
 
           <div>
             <label className="block text-gray-700 mb-1">Categoria</label>
             <select
-              {...register('categoryId', { required: true })}
-              className="w-full p-2 border border-gray-300 rounded mt-1 focus:outline-none focus:border-blue-500"
+              {...register('categoryId', { required: "Selecione uma categoria" })}
+              className={`w-full p-2 border rounded mt-1 focus:outline-none ${errors.categoryId ? 'border-red-500' : 'border-gray-300 focus:border-blue-500'
+                }`}
               defaultValue=""
             >
               <option value="" disabled>Selecione uma categoria</option>
               {categories.map((category) => (
-                <option key={category.id} value={category.id}>{category.name}</option>
+                <option key={category.Id} value={category.Id}>{category.Name}</option>
               ))}
             </select>
+            {errors.categoryId && (
+              <p className="text-red-500 text-sm mt-1">{errors.categoryId.message}</p>
+            )}
           </div>
 
           <button

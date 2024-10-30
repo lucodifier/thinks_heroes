@@ -1,5 +1,7 @@
+import { Category } from "./category";
+
 export interface Hero {
-  id: string;
-  name: string;
-  categoryId: string;
+  Id: Number;
+  Name: string;
+  Category: Category;
 }
