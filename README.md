@@ -2,8 +2,9 @@ Projeto de lista de herois
 
 ## Requisitos
 
-Versão node: 22.0.0
-pnpm
+- Versão node: 22.0.0
+
+- pnpm
 
 ## Commands
 
