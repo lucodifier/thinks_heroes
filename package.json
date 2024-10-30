@@ -13,8 +13,8 @@
     "@hookform/resolvers": "^3.9.1",
     "axios": "^1.7.7",
     "next": "15.0.2",
-    "react": "19.0.0-rc-02c0e824-20241028",
-    "react-dom": "19.0.0-rc-02c0e824-20241028",
+    "react": "18",
+    "react-dom": "18",
     "react-hook-form": "^7.53.1",
     "styled-components": "^6.1.13",
     "yup": "^1.4.0"
