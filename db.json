@@ -1,0 +1,24 @@
+{
+  "heroes": [
+    {
+      "id": 1,
+      "name": "Herói 1",
+      "categoryId": "1"
+    },
+    {
+      "id": 2,
+      "name": "Herói 2",
+      "categoryId": "2"
+    }
+  ],
+  "categories": [
+    {
+      "id": "1",
+      "name": "Categoria A"
+    },
+    {
+      "id": "2",
+      "name": "Categoria B"
+    }
+  ]
+}
