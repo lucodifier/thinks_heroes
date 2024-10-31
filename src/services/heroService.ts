@@ -44,7 +44,6 @@ export const saveHero = async (id: number, data: Hero): Promise<Hero> => {
     console.error("Error save hero:", error);
     throw error;
   }
-
 }
 
 export const deleteHero = async (id: number) => {
