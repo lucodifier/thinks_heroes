@@ -81,7 +81,12 @@ const HeroForm: React.FC<{ heroId: string | null }> = ({ heroId }) => {
 const CreateHero: React.FC = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const heroId = searchParams?.get('id') || "";
+  const [heroId, setHeroId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const id = searchParams?.get('id');
+    setHeroId(id || "");
+  }, [searchParams]);
 
   const handleBack = () => {
     router.push('/heroes');
@@ -94,7 +99,6 @@ const CreateHero: React.FC = () => {
       </h1>
 
       <div className="w-full max-w-lg bg-white rounded-lg shadow-lg p-6">
-        {/* Botão Voltar */}
         <div className="flex justify-between items-center mb-4">
           <button
             onClick={handleBack}
@@ -104,7 +108,7 @@ const CreateHero: React.FC = () => {
           </button>
         </div>
 
-        <HeroForm heroId={heroId} />
+        {heroId !== null && <HeroForm heroId={heroId} />}
       </div>
     </div>
   );
