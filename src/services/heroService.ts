@@ -6,9 +6,14 @@ interface HeroResponse {
   Items: Hero[];
 }
 
-export const fetchHeroes = async (skip: number, take: number): Promise<HeroResponse> => {
+export const fetchHeroes = async (skip: number, take: number, categoryId?: number): Promise<HeroResponse> => {
   try {
     const response = await api.get<HeroResponse>(`/heroes?skip=${skip}&take=${take}`);
+
+    if (response.data && categoryId) {
+      response.data.Items =  response.data.Items.filter(x=>x.Category.Id == categoryId);
+    }
+
     return response.data;
   } catch (error) {
     console.error("Error fetching heroes:", error);
@@ -27,7 +32,7 @@ export const fetchHero = async (id: number): Promise<Hero> => {
 
 export const saveHero = async (id: number, data: Hero): Promise<Hero> => {
   try {
-    if (id>0){
+    if (id > 0) {
       const response = await api.put(`/heroes/${id}`, data);
       return response.data;
     }
@@ -42,9 +47,9 @@ export const saveHero = async (id: number, data: Hero): Promise<Hero> => {
 
 }
 
-export const deleteHero = async (id: number): Promise => {
+export const deleteHero = async (id: number) => {
   try {
-      await api.delete(`/heroes/${id}`);
+    await api.delete(`/heroes/${id}`);
   } catch (error) {
     console.error("Error save hero:", error);
     throw error;

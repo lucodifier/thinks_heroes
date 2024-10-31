@@ -13,23 +13,27 @@ const HeroesList: React.FC = () => {
   const router = useRouter();
   const [heroes, setHeroes] = useState<Hero[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
-  const [total, setTotal] = useState(0); 
-  const [page, setPage] = useState(1); 
-  const [take] = useState(5); 
+  const [selectedCategory, setSelectedCategory] = useState<number | 0>(0);
+  const [total, setTotal] = useState(0);
+  const [page, setPage] = useState(1);
+  const [take] = useState(5);
   const [showModal, setShowModal] = useState(false);
   const [heroToDelete, setHeroToDelete] = useState<Number | null>(null);
 
   const totalPages = Math.ceil(total / take);
 
   useEffect(() => {
-    getHeroes(page);
     getCategories();
-  }, [page]);
+  }, []);
 
-  const getHeroes = async (page: number) => {
+  useEffect(() => {
+    getHeroes(page, selectedCategory);
+  }, [page, selectedCategory]);
+
+  const getHeroes = async (page: number, categoryId: number | 0) => {
     const skip = (page - 1) * take;
     try {
-      const data = await fetchHeroes(skip, take);
+      const data = await fetchHeroes(skip, take, categoryId);
       setHeroes(data.Items);
       setTotal(data.Total);
     } catch (error) {
@@ -78,9 +82,14 @@ const HeroesList: React.FC = () => {
     }
   };
 
-  
   const goToPreviousPage = () => setPage((prevPage) => Math.max(prevPage - 1, 1));
   const goToNextPage = () => setPage((prevPage) => Math.min(prevPage + 1, totalPages));
+
+  const handleCategoryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const categoryId = event.target.value ? Number(event.target.value) : null;
+    setSelectedCategory(categoryId || 0);
+    setPage(1); // Reiniciar para a primeira página ao alterar o filtro
+  };
 
   return (
     <div className="flex flex-col items-center min-h-screen bg-gradient-to-r from-blue-500 to-purple-600 p-6">
@@ -94,6 +103,21 @@ const HeroesList: React.FC = () => {
           >
             <PlusIcon className="h-5 w-5 mr-2" /> Novo
           </button>
+
+          {/* Filtro de Categoria */}
+          <div className="flex items-center">
+            <label className="mr-2 text-gray-700">Filtrar por Categoria:</label>
+            <select
+              value={selectedCategory || ""}
+              onChange={handleCategoryChange}
+              className="p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+            >
+              <option value="">Todas</option>
+              {categories.map((category) => (
+                <option key={category.Id} value={category.Id}>{category.Name}</option>
+              ))}
+            </select>
+          </div>
         </div>
 
         <div className="overflow-x-auto">
@@ -132,7 +156,6 @@ const HeroesList: React.FC = () => {
           </table>
         </div>
 
-        
         <div className="flex justify-between items-center mt-4">
           <button
             onClick={goToPreviousPage}
@@ -152,7 +175,6 @@ const HeroesList: React.FC = () => {
         </div>
       </div>
 
-      
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
