@@ -84,6 +84,7 @@ const CreateHero: React.FC = () => {
   const [heroId, setHeroId] = useState<string | null>(null);
 
   useEffect(() => {
+    // Capture 'id' from searchParams safely and update heroId
     const id = searchParams?.get('id');
     setHeroId(id || "");
   }, [searchParams]);
@@ -108,6 +109,7 @@ const CreateHero: React.FC = () => {
           </button>
         </div>
 
+        {/* Render HeroForm only after heroId is set */}
         {heroId !== null && <HeroForm heroId={heroId} />}
       </div>
     </div>
