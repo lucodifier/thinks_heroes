@@ -2,7 +2,6 @@
 
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import api from '@/services/api';
 import { Hero } from '@/types/hero';
 import { PlusIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/solid';
 import { fetchCategories } from '@/services/categoryService';

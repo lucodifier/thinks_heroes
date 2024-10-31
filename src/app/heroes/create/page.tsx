@@ -2,7 +2,7 @@
 
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { useEffect, useState, Suspense } from 'react';
+import { useEffect, useState } from 'react';
 import { Hero } from '@/types/hero';
 import { ArrowLeftIcon, CheckIcon } from '@heroicons/react/24/solid';
 import { fetchHero, saveHero } from '@/services/heroService';
@@ -104,9 +104,7 @@ const CreateHero: React.FC = () => {
           </button>
         </div>
 
-        <Suspense fallback={<div>Carregando...</div>}>
-          <HeroForm heroId={heroId} />
-        </Suspense>
+        <HeroForm heroId={heroId} />
       </div>
     </div>
   );
