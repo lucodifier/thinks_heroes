@@ -1,19 +1,12 @@
 "use client";
 
-import { Suspense, useEffect, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { Suspense} from 'react';
+import { useRouter } from 'next/navigation';
 import { ArrowLeftIcon } from '@heroicons/react/24/solid';
 import HeroForm from "@/app/components/HeroForm";
 
 const CreateHero: React.FC = () => {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const [heroId, setHeroId] = useState<string | null>(null);
-
-  useEffect(() => {
-    const id = searchParams?.get('id');
-    setHeroId(id || "");
-  }, [searchParams]);
 
   const handleBack = () => {
     router.push('/heroes');
@@ -22,7 +15,7 @@ const CreateHero: React.FC = () => {
   return (
     <div className="flex flex-col items-center min-h-screen bg-gradient-to-r from-blue-500 to-purple-600 p-6">
       <h1 className="text-4xl font-extrabold text-white mb-8">
-        {heroId ? "Editar Herói" : "Criar Novo Herói"}
+        Cadastro Heroi
       </h1>
 
       <div className="w-full max-w-lg bg-white rounded-lg shadow-lg p-6">
@@ -38,7 +31,7 @@ const CreateHero: React.FC = () => {
 
       
         <Suspense fallback={<div>Carregando...</div>}>
-          {heroId !== null && <HeroForm heroId={heroId} />}
+          <HeroForm />
         </Suspense>
       </div>
     </div>

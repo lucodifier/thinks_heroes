@@ -1,7 +1,8 @@
 "use client";
 
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm, SubmitHandler } from 'react-hook-form';
+
 import { useEffect, useState } from 'react';
 import { Hero } from '@/types/hero';
 import { CheckIcon } from '@heroicons/react/24/solid';
@@ -14,12 +15,21 @@ interface HeroFormInputs {
   categoryId: number;
 }
 
-const HeroForm: React.FC<{ heroId: string | null }> = ({ heroId }) => {
-  const router = useRouter(); 
+const HeroForm: React.FC<{}> = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const { register, handleSubmit, setValue, formState: { errors } } = useForm<HeroFormInputs>();
   const [categories, setCategories] = useState<Category[]>([]);
 
+  const [heroId, setHeroId] = useState<string | null>(null);
+
   useEffect(() => {
+    const id = searchParams?.get('id');
+    setHeroId(id || "");
+  }, [searchParams]);
+
+  useEffect(() => {
+
     fetchCategories().then((response) => setCategories(response.Items));
     if (heroId) {
       fetchHero(Number(heroId)).then((response) => {
