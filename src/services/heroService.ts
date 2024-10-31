@@ -6,15 +6,10 @@ interface HeroResponse {
   Items: Hero[];
 }
 
-export const fetchHeroes = async (skip: number, take: number, categoryId?: number): Promise<HeroResponse> => {
+export const fetchHeroes = async (skip: number, take: number): Promise<HeroResponse> => {
   try {
-    const response = await api.get<HeroResponse>(`/heroes?skip=${skip}&take=${take}`);
-
-    if (response.data && categoryId) {
-      response.data.Items =  response.data.Items.filter(x=>x.Category.Id == categoryId);
-    }
-
-    return response.data;
+      const response = await api.get<HeroResponse>(`/heroes?skip=${skip}&take=${take}`);
+      return response.data;
   } catch (error) {
     console.error("Error fetching heroes:", error);
     throw error;
